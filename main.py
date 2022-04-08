@@ -44,10 +44,10 @@ async def start_game(message: types.Message):
     else:
         user = users[message.from_user.id]
     state = dp.current_state(user=user.id)
-    await state.set_state(TestStates.WAITING_ANSWER[0])
+    await state.set_state(MyStates.WAITING_ANSWER[0])
     await message.answer(START_GAME_MESSAGE)
     await bot.send_photo(chat_id=user.id, photo=open(user.get_photo(),'rb'))
 
 if __name__ == "__main__":
-    print(TestStates.all())
+    print(MyStates.all())
     executor.start_polling(dp, skip_updates=True)
