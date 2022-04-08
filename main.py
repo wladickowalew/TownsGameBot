@@ -1,16 +1,13 @@
-import asyncio
 import logging
-from datetime import datetime
+from os import getenv
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
-from os import getenv
-from aiogram.utils.exceptions import BotBlocked
 
 from strings import *
 from objects import *
-from utils import TestStates
+from utils import MyStates
 
 bot = Bot(token=getenv("BOT_TOKEN"))
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -18,11 +15,10 @@ dp.middleware.setup(LoggingMiddleware())
 logging.basicConfig(level=logging.INFO)
 
 commands = {
-    "/start": "Приветствует пользователя!",
-    "/help": "Выводит это сообщение помощи",
-    "/start_game": "Запускает игру 'Отгадай город'"
+    "/start": START_DESCRIBE,
+    "/help": HELP_DESCRIBE,
+    "/start_game": START_GAME_DESCRIBE
 }
-
 
 def create_help():
     ans = ""
@@ -38,8 +34,7 @@ async def cmd_test1(message: types.Message):
 
 @dp.message_handler(commands="start")
 async def cmd_test1(message: types.Message):
-    hello = "Приветствую тебя, я мало чего могу, но вот, что могу:\n"
-    await message.answer(hello + create_help())
+    await message.answer(START_MESSAGE + create_help())
 
 
 @dp.message_handler(commands="start_game")
