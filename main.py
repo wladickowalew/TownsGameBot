@@ -7,14 +7,13 @@ from aiogram.utils import executor
 
 from strings import *
 from objects import *
-import towns
 from utils import MyStates
 
 bot = Bot(token=getenv("BOT_TOKEN"))
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 logging.basicConfig(level=logging.INFO)
-towns.load_towns()
+#towns.load_towns()
 
 commands = {
     "/start": START_DESCRIBE,

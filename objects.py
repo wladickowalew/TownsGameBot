@@ -1,7 +1,7 @@
 from towns import towns
 from random import choice, randint
 from images_search import get_images_urls
-from towns import towns
+from towns3 import towns
 
 users = {}
 
