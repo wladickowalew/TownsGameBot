@@ -7,12 +7,14 @@ from aiogram.utils import executor
 
 from strings import *
 from objects import *
+import towns
 from utils import MyStates
 
 bot = Bot(token=getenv("BOT_TOKEN"))
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 logging.basicConfig(level=logging.INFO)
+towns.load_towns()
 
 commands = {
     "/start": START_DESCRIBE,
@@ -40,7 +42,7 @@ async def waiting_name_state(message: types.Message):
         await message.answer(WIN_MESSAGE if win else LOSE_MESSAGE.format(user.current_town))
     else:
         await message.answer(NEXT_MESSAGE)
-        await bot.send_photo(chat_id=user.id, photo=open(file_name, 'rb'))
+        await bot.send_photo(chat_id=user.id, photo=file_name)
 
 
 @dp.message_handler(commands="help")
@@ -62,7 +64,9 @@ async def start_game(message: types.Message):
     state = dp.current_state(user=user.id)
     await state.set_state(MyStates.WAITING_ANSWER[0])
     await message.answer(START_GAME_MESSAGE)
-    await bot.send_photo(chat_id=user.id, photo=open(user.get_photo(), 'rb'))
+    t = user.get_photo()
+    print(t)
+    await bot.send_photo(chat_id=user.id, photo=t)
 
 if __name__ == "__main__":
     print(MyStates.all())
