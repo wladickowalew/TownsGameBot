@@ -20,11 +20,27 @@ commands = {
     "/start_game": START_GAME_DESCRIBE
 }
 
+
 def create_help():
     ans = ""
     for command in commands:
         ans += f"{command} - {commands[command]}\n"
     return ans
+
+
+@dp.message_handler(state=MyStates.WAITING_ANSWER)
+async def waiting_name_state(message: types.Message):
+    user = users[message.from_user.id]
+    win = user.current_town.lower() == message.text.lower()
+    file_name = user.get_photo()
+    if win or file_name is None:
+        del users[user.id]
+        state = dp.current_state(user=user.id)
+        await state.reset_state()
+        await message.answer(WIN_MESSAGE if win else LOSE_MESSAGE.format(user.current_town))
+    else:
+        await message.answer(NEXT_MESSAGE)
+        await bot.send_photo(chat_id=user.id, photo=open(file_name, 'rb'))
 
 
 @dp.message_handler(commands="help")
@@ -46,7 +62,7 @@ async def start_game(message: types.Message):
     state = dp.current_state(user=user.id)
     await state.set_state(MyStates.WAITING_ANSWER[0])
     await message.answer(START_GAME_MESSAGE)
-    await bot.send_photo(chat_id=user.id, photo=open(user.get_photo(),'rb'))
+    await bot.send_photo(chat_id=user.id, photo=open(user.get_photo(), 'rb'))
 
 if __name__ == "__main__":
     print(MyStates.all())
